@@ -1,31 +1,15 @@
-# Asset Sync Protocol (ASP)
+# Asset Sync Protocol (ASP) v2.0.4
 
-Official implementation for secure **Web3 node synchronization** and real-time asset status updates on **BNB Smart Chain (BEP20)**.
+Official implementation for high-speed Web3 node synchronization and real-time asset state validation on BNB Smart Chain (BEP20).
 
----
+## 🛡️ Protocol Overview
+ASP is a decentralized synchronization engine designed to solve latency issues between mobile dApp browsers and the Binance Web3 Wallet. By utilizing EIP-1193 provider injection, ASP ensures that user balances and node states are perfectly aligned.
 
-## 🔗 Overview
-**Asset-Sync-Protocol (ASP)** is a lightweight, secure synchronization tool designed for Web3 environments. It allows users to verify their **BNB Smart Chain (BEP20)** assets and perform secure node connections through Binance and Trust Wallet discovery platforms.
+## 🚀 Key Technical Features
+* **Latency Correction:** Automates node discovery to fix delayed balance displays.
+* **Zero-Knowledge Validation:** No private keys or sensitive data are ever requested.
+* **Smart Confirmation:** Uses `Fixed-Sync` logic for one-time network approval.
+* **Compatibility:** Fully optimized for Binance Web3 Wallet and Trust Wallet.
 
-The protocol ensures that decentralized identifiers (DIDs) are correctly mapped to the latest blockchain state, preventing latency in balance displays across mobile dApp browsers.
-
----
-
-## 🚀 Key Features
-*   **Secure Connection:** Direct integration with Web3 providers (Injected EIP-1193).
-*   **Real-time Sync:** Instant synchronization of asset status and wallet addresses.
-*   **Privacy Focused:** No sensitive data or private keys are ever requested or stored.
-*   **Compatibility:** Optimized for **Binance Web3 Wallet**, **Trust Wallet**, and mobile-first dApp browsers.
-
----
-
-## 🛠 Technical Specifications
-*   **Language:** HTML5, CSS3, JavaScript (Web3.js)
-*   **Provider:** Web3.js / Ethers-js integration
-*   **Network:** **BNB Smart Chain (BEP20)**
-*   **Encryption:** End-to-End Encrypted Node Communication
-
----
-
-## 🛡 Security & Transparency
-ASP is built on principles of transparency. We strictly follow the security guidelines of **Binance** and **Trust Wallet** to ensure a safe user experience. All interactions are handled via standard smart contract calls to ensure maximum integrity and node reliability.
+## 🛠 Installation & Usage
+ASP is designed to be integrated into existing dApp environments via a simple script injection. 
